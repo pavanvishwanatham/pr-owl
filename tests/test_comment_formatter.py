@@ -29,7 +29,7 @@ def basic_results():
         "DocsAgent":         make_result("DocsAgent",         []),
         "SummaryAgent":      make_result("SummaryAgent",      summary="This PR adds retry logic."),
         "AIReviewAgent":     make_result("AIReviewAgent",     summary="Looks mostly good. One security issue."),
-        "AutoFixAgent":      make_result("AutoFixAgent",      summary="### Fix: Remove hardcoded key\n```diff\n-API_KEY='sk_live_XXXX...'\n+API_KEY=os.getenv('API_KEY')\n```"),
+        "AutoFixAgent":      make_result("AutoFixAgent",      summary="### Fix: Remove hardcoded key\n```diff\n-API_KEY='STRIPE_KEY_REDACTED'\n+API_KEY=os.getenv('API_KEY')\n```"),
     }
 
 

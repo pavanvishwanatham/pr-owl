@@ -36,7 +36,7 @@ def sample_files():
                 "@@ -0,0 +1,10 @@\n"
                 "+import os\n"
                 "+\n"
-                "+API_KEY = 'sk_live_XXXXXXXXXXXXXXXXXXXXXXXX'\n"
+                "+API_KEY = 'ghp_REDACTED_TEST_TOKEN_NOT_REAL'\n"
                 "+\n"
                 "+def process_payment(amount):\n"
                 "+    # TODO: add currency support\n"

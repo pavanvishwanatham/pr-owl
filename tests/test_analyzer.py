@@ -63,7 +63,7 @@ def test_analyzer_finds_security_issue_in_sample_files(analyzer, sample_pr_data,
     results = run(analyzer.analyze(sample_pr_data, sample_diff, sample_files, run_ai=False))
     sec = results.get("SecurityAgent")
     assert sec is not None
-    # sample_files has 'sk_live_XXXXXXXXXXXXXXXXXXXXXXXX' — should be flagged
+    # sample_files has 'ghp_REDACTED_TEST_TOKEN_NOT_REAL' — should be flagged
     assert len(sec.findings) >= 1
 
 

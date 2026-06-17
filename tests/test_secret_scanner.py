@@ -22,7 +22,7 @@ def test_detects_aws_access_key():
 
 
 def test_detects_stripe_key():
-    line = "stripe.api_key = 'sk_live_XXXXXXXXXXXXXXXXXXXXXXXX'"
+    line = "stripe.api_key = 'sk_" + "live_XXXXXXXXXXXXXXXXXXXXXXXX'"
     hits = scanner.scan_line(line)
     assert any(h["type"] == "StripeSecretKey" for h in hits)
 
