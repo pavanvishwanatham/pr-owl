@@ -11,9 +11,6 @@ Flow:
 """
 import asyncio
 import structlog
-import dramatiq
-import redis as redis_lib
-from dramatiq.brokers.redis import RedisBroker
 
 from core.config import get_settings
 from core.analyzer import PRAnalyzer
@@ -25,20 +22,7 @@ from db.models import PRReview, PRFinding
 
 log = structlog.get_logger()
 
-# Connect Dramatiq to Redis
-# Use explicit Redis client so rediss:// (Upstash TLS) works correctly
-_redis_url = get_settings().redis_url
-_redis_client = redis_lib.from_url(_redis_url, ssl_cert_reqs=None)
-broker = RedisBroker(client=_redis_client)
-dramatiq.set_broker(broker)
-
 _analyzer = PRAnalyzer()
-
-
-@dramatiq.actor(max_retries=2, time_limit=300_000)  # 5 min timeout
-def review_pr_task(owner: str, repo: str, pr_number: int):
-    """Entry point called by the webhook handler. Runs the async pipeline."""
-    asyncio.run(_review_pr_async(owner=owner, repo=repo, pr_number=pr_number))
 
 
 async def _review_pr_async(owner: str, repo: str, pr_number: int):

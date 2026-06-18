@@ -1,14 +1,14 @@
 """
 GitHub webhook receiver.
-Verifies HMAC-SHA256 signature, filters PR events, enqueues analysis jobs.
+Verifies HMAC-SHA256 signature, filters PR events, runs review in background.
 """
 import hashlib
 import hmac
 import structlog
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Header, HTTPException, Request
 
 from core.config import get_settings
-from workers.pr_worker import review_pr_task
+from workers.pr_worker import _review_pr_async
 
 log = structlog.get_logger()
 router = APIRouter()
@@ -30,6 +30,7 @@ def _verify_signature(payload: bytes, signature: str) -> bool:
 @router.post("/github")
 async def github_webhook(
     request: Request,
+    background_tasks: BackgroundTasks,
     x_github_event: str = Header(default=""),
     x_hub_signature_256: str = Header(default=""),
 ):
@@ -61,7 +62,7 @@ async def github_webhook(
 
     log.info("webhook.pr_received", owner=owner, repo=repo_name, pr=pr_number, action=action)
 
-    # Push async job to Dramatiq queue
-    review_pr_task.send(owner=owner, repo=repo_name, pr_number=pr_number)
+    # Run review as a FastAPI background task (no Redis/Dramatiq needed)
+    background_tasks.add_task(_review_pr_async, owner=owner, repo=repo_name, pr_number=pr_number)
 
     return {"status": "queued", "pr": pr_number}
