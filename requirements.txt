@@ -7,6 +7,7 @@ githubkit==0.11.7
 
 # AI
 litellm==1.40.0
+google-generativeai>=0.7.0
 
 # Queue
 dramatiq[redis]==1.15.0
