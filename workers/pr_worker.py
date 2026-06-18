@@ -12,6 +12,7 @@ Flow:
 import asyncio
 import structlog
 import dramatiq
+import redis as redis_lib
 from dramatiq.brokers.redis import RedisBroker
 
 from core.config import get_settings
@@ -25,7 +26,10 @@ from db.models import PRReview, PRFinding
 log = structlog.get_logger()
 
 # Connect Dramatiq to Redis
-broker = RedisBroker(url=get_settings().redis_url)
+# Use explicit Redis client so rediss:// (Upstash TLS) works correctly
+_redis_url = get_settings().redis_url
+_redis_client = redis_lib.from_url(_redis_url, ssl_cert_reqs=None)
+broker = RedisBroker(client=_redis_client)
 dramatiq.set_broker(broker)
 
 _analyzer = PRAnalyzer()
