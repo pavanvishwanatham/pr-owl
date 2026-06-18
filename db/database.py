@@ -37,7 +37,7 @@ async def init_db():
     """Create all tables on startup."""
     from db import models  # noqa: F401 — ensures models are registered
     async with _get_engine().begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+        await conn.run_sync(lambda c: SQLModel.metadata.create_all(c, checkfirst=True))
 
 
 async def get_session() -> AsyncSession:
